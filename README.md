@@ -2,7 +2,7 @@
 
 > Architecting the Source of Truth for Global Brands | GA4 | GTM | Data Strategy
 
-🔗 **Live Site:** [nikhil-portfolio-rouge-phi.vercel.app](https://nikhil-portfolio-rouge-phi.vercel.app)
+🔗 **Live Site:** [[nikhil-portfolio-rouge-phi.vercel.app](https://nikhil-portfolio-v2-qmbonh9y2.vercel.app/)]([https://nikhil-portfolio-rouge-phi.vercel.app](https://nikhil-portfolio-v2-qmbonh9y2.vercel.app/))
 
 ---
 
