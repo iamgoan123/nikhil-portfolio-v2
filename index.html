@@ -57,7 +57,7 @@ nav.scrolled{background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bot
 .status-dot{width:6px;height:6px;border-radius:50%;background:#818cf8;animation:statusPulse 2s infinite}
 @keyframes statusPulse{0%,100%{opacity:.4}50%{opacity:1}}
 .hero h1{font-size:clamp(36px,5.8vw,68px);font-weight:900;line-height:1.05;letter-spacing:-2px;margin-bottom:18px}
-.hero h1 .char{display:inline-block;opacity:0}
+.hero h1 .char{display:inline-block}
 .hero h1 .gradient{background:linear-gradient(135deg,#fff 0%,#a5b4fc 50%,#6366f1 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gshift 5s ease infinite}
 @keyframes gshift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .hero p{font-size:17px;color:rgba(255,255,255,.45);max-width:480px;line-height:1.75;font-weight:300;opacity:0}
@@ -83,10 +83,10 @@ nav.scrolled{background:rgba(10,10,15,.85);backdrop-filter:blur(20px);border-bot
 /* SECTIONS */
 section{position:relative;z-index:1}
 .container{max-width:900px;margin:0 auto;width:100%;padding:0 32px}
-.sec-label{font-size:11px;color:#818cf8;letter-spacing:3px;text-transform:uppercase;font-weight:600;opacity:0;transform:translateY(15px)}
-.sec-title{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-1px;opacity:0;transform:translateY(25px);filter:blur(6px)}
+.sec-label{font-size:11px;color:#818cf8;letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.sec-title{font-size:32px;font-weight:800;margin-top:6px;letter-spacing:-1px}
 .sec-title .hl{color:#818cf8}
-.sec-sub{opacity:0;transform:translateY(15px)}
+.sec-sub{}
 
 /* ABOUT */
 .about-section{padding:80px 24px 60px}
@@ -287,9 +287,9 @@ footer{margin-top:50px;padding:22px 0;border-top:1px solid rgba(255,255,255,.05)
 </section>
 
 <!-- TESTIMONIALS (PINNED SCROLL) -->
-<section class="pinned-section" id="testimonials" style="min-height:100vh;padding:80px 0">
+<section class="pinned-section" id="testimonials" style="padding:60px 0">
   <div class="container" style="margin-bottom:20px"><span class="sec-label">Testimonials</span><h2 class="sec-title">Kind Words from <span class="hl">Colleagues</span></h2></div>
-  <div style="position:relative;min-height:60vh" id="pinnedWrap">
+  <div style="position:relative;min-height:300px" id="pinnedWrap">
     <div class="pinned-panel" data-panel="0"><div class="pinned-inner"><div class="test-qm">"</div><div class="test-quote">I want to give Nik recognition for his amazing work with our client at Strand. He always goes above and beyond to ensure the client is provided with the data and reporting required. High pressure, quick turnaround. Nik always takes it in his stride and delivers.</div><div class="test-author"><div class="test-avatar">S</div><div><div class="test-name">Stephanie Terrett</div><div class="test-role">Pattern® (Awardco)</div></div></div></div></div>
     <div class="pinned-panel" data-panel="1"><div class="pinned-inner"><div class="test-qm">"</div><div class="test-quote">Nikhil is an exceptional analytics professional. His knowledge of Google Analytics and ability to build dashboards in Looker Studio make him a true expert. He's a one-man army when it comes to analytics, always eager to learn and automate using AI.</div><div class="test-author"><div class="test-avatar">S</div><div><div class="test-name">Shubham Shukla</div><div class="test-role">SEO Assistant, Pattern Australia</div></div></div></div></div>
     <div class="pinned-panel" data-panel="2"><div class="pinned-inner"><div class="test-qm">"</div><div class="test-quote">Nikhil is an excellent worker and provides strategic advice for the optimum analytical setup. He's a strong communicator that explains complex tracking in simple terms. He led projects during the intense GA4 switch. An asset to any team.</div><div class="test-author"><div class="test-avatar">K</div><div><div class="test-name">Katie McKelvie</div><div class="test-role">Search & Digital Experience Manager, Royal Canin</div></div></div></div></div>
@@ -433,8 +433,8 @@ if(!isMobile){
 /* 4. PRELOADER */
 (function(){
   var tl=gsap.timeline();
-  tl.to('#preText',{opacity:1,y:0,duration:1,delay:0.5,ease:'power2.out'})
-    .to('#preloader',{opacity:0,duration:0.6,delay:0.8,onComplete:function(){
+  tl.to('#preText',{opacity:1,y:0,duration:0.6,delay:0.3,ease:'power2.out'})
+    .to('#preloader',{opacity:0,duration:0.4,delay:0.4,onComplete:function(){
       document.getElementById('preloader').style.display='none';
       heroEntrance();
     }});
@@ -444,34 +444,39 @@ if(!isMobile){
 /* 5. CHARACTER-BY-CHARACTER HERO */
 function heroEntrance(){
   var title=document.getElementById('heroTitle');
-  var html=title.innerHTML;
+  var nodes=title.childNodes;
   var result='';
-  var inTag=false;
-  for(var i=0;i<html.length;i++){
-    var c=html[i];
-    if(c==='<')inTag=true;
-    if(inTag){result+=c;if(c==='>')inTag=false;}
-    else if(c===' ')result+=' ';
-    else result+='<span class="char">'+c+'</span>';
+  for(var n=0;n<nodes.length;n++){
+    var node=nodes[n];
+    if(node.nodeType===3){
+      var text=node.textContent;
+      for(var i=0;i<text.length;i++){
+        if(text[i]===' ')result+=' ';
+        else result+='<span class="char" style="opacity:0;transform:translateY(50px) rotateX(60deg);display:inline-block">'+text[i]+'</span>';
+      }
+    } else if(node.nodeType===1){
+      var tag=node.outerHTML;
+      result+=tag;
+    }
   }
   title.innerHTML=result;
-  gsap.to('.char',{opacity:1,y:0,rotateX:0,duration:0.6,stagger:0.025,ease:'back.out(1.3)'});
-  gsap.fromTo('.char',{opacity:0,y:50,rotateX:60},{opacity:1,y:0,rotateX:0,duration:0.6,stagger:0.025,ease:'back.out(1.3)'});
-  gsap.to('#heroBadge',{opacity:1,duration:0.8,delay:0.5});
-  gsap.to('#heroDesc',{opacity:1,duration:0.8,delay:0.7});
-  gsap.to('#heroBtns',{opacity:1,duration:0.8,delay:0.9});
-  gsap.to('#scrollHint',{opacity:1,duration:1,delay:1.5});
+  gsap.to('.char',{opacity:1,y:0,rotateX:0,duration:0.5,stagger:0.025,ease:'back.out(1.3)'});
+  gsap.to('#heroBadge',{opacity:1,duration:0.8,delay:0.3});
+  gsap.to('#heroDesc',{opacity:1,duration:0.8,delay:0.5});
+  gsap.to('#heroBtns',{opacity:1,duration:0.8,delay:0.7});
+  gsap.to('#scrollHint',{opacity:1,duration:1,delay:1.2});
 }
 
 /* 10. SCROLL PROGRESS BAR */
 gsap.to('#scrollProgress',{width:'100%',ease:'none',scrollTrigger:{trigger:'body',start:'top top',end:'bottom bottom',scrub:0.2}});
 
 /* 11. SECTION REVEALS */
-ScrollTrigger.batch('.sec-label',{onEnter:function(b){gsap.to(b,{opacity:1,y:0,duration:0.7,stagger:0.1,ease:'power2.out'});},start:'top 88%',once:true});
-ScrollTrigger.batch('.sec-title',{onEnter:function(b){gsap.to(b,{opacity:1,y:0,filter:'blur(0px)',duration:0.9,stagger:0.1,ease:'power2.out'});},start:'top 88%',once:true});
-ScrollTrigger.batch('.sec-sub',{onEnter:function(b){gsap.to(b,{opacity:1,y:0,duration:0.7,stagger:0.1,delay:0.15,ease:'power2.out'});},start:'top 88%',once:true});
-ScrollTrigger.batch('.stat-card,.recog-card',{onEnter:function(b){gsap.fromTo(b,{opacity:0,y:30},{opacity:1,y:0,duration:0.7,stagger:0.12,ease:'back.out(1.3)'});},start:'top 90%',once:true});
-ScrollTrigger.batch('.exp-card',{onEnter:function(b){gsap.fromTo(b,{opacity:0,x:-25},{opacity:1,x:0,duration:0.7,stagger:0.15,ease:'power2.out'});},start:'top 88%',once:true});
+ScrollTrigger.batch('.sec-label',{onEnter:function(b){gsap.from(b,{opacity:0,y:15,duration:0.7,stagger:0.1,ease:'power2.out'});},start:'top 90%',once:true});
+ScrollTrigger.batch('.sec-title',{onEnter:function(b){gsap.from(b,{opacity:0,y:25,filter:'blur(6px)',duration:0.9,stagger:0.1,ease:'power2.out'});},start:'top 90%',once:true});
+ScrollTrigger.batch('.sec-sub',{onEnter:function(b){gsap.from(b,{opacity:0,y:15,duration:0.7,stagger:0.1,delay:0.1,ease:'power2.out'});},start:'top 90%',once:true});
+ScrollTrigger.batch('.stat-card,.recog-card',{onEnter:function(b){gsap.from(b,{opacity:0,y:30,duration:0.7,stagger:0.12,ease:'back.out(1.3)'});},start:'top 92%',once:true});
+ScrollTrigger.batch('.exp-card',{onEnter:function(b){gsap.from(b,{opacity:0,x:-25,duration:0.7,stagger:0.15,ease:'power2.out'});},start:'top 90%',once:true});
+ScrollTrigger.batch('.hscroll-card',{onEnter:function(b){gsap.from(b,{opacity:0,y:20,duration:0.6,stagger:0.1,ease:'power2.out'});},start:'top 92%',once:true});
 
 /* 9. COUNTER ANIMATIONS */
 document.querySelectorAll('[data-target]').forEach(function(el){
@@ -497,15 +502,14 @@ if(!isMobile){
   var dots=document.querySelectorAll('.pinned-dot');
   var totalPanels=panels.length;
   if(totalPanels>1){
-    ScrollTrigger.create({trigger:'#testimonials',start:'top top',end:'+='+totalPanels*100+'%',pin:true,scrub:1,onUpdate:function(self){
+    panels.forEach(function(p,i){if(i>0)gsap.set(p,{opacity:0});});
+    ScrollTrigger.create({trigger:'#pinnedWrap',start:'top center',end:'+='+totalPanels*80+'%',scrub:0.5,onUpdate:function(self){
       var p=self.progress;
       var idx=Math.min(Math.floor(p*totalPanels),totalPanels-1);
       panels.forEach(function(panel,i){
-        gsap.to(panel,{opacity:i===idx?1:0,duration:0.3});
+        gsap.to(panel,{opacity:i===idx?1:0,duration:0.4});
       });
-      dots.forEach(function(d,i){
-        d.classList.toggle('active',i===idx);
-      });
+      dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});
     }});
   }
 }
